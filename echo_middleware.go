@@ -16,14 +16,22 @@ func EchoMiddleware(jwtInteractor *Interactor, isRequired bool) echo.MiddlewareF
 				return next(c)
 			}
 
+			// Remove the "Bearer " prefix
+			if len(tokenStr) > 7 && tokenStr[:7] == "Bearer " {
+				tokenStr = tokenStr[7:]
+			}
+
 			// Parse the token
 			claims, err := jwtInteractor.ParseWithClaims(tokenStr)
 			if err != nil {
 				return echo.ErrUnauthorized.SetInternal(err)
 			}
 
+			// Set the token in the context
+			c.Set(TokenKey.String(), tokenStr)
 			// Set the claims in the context
 			c.Set(ClaimsKey.String(), claims)
+
 			return next(c)
 		}
 	}

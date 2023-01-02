@@ -1,7 +1,6 @@
 package jwt
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -30,22 +29,7 @@ type (
 
 	// ClaimsOption is a function that is used to set the claims options
 	ClaimsOption func(*Claims)
-
-	// ContextKey is a struct that contains the key that is used to set the value in the context
-	ContextKey struct{ Key string }
 )
-
-// String is a method that returns the key as a string
-func (c ContextKey) String() string {
-	if c.Key == "" {
-		return fmt.Sprintf("%#v", c)
-	}
-
-	return c.Key
-}
-
-// ClaimsCtxKey is a variable that is used to set the claims in the context
-var ClaimsKey = ContextKey{Key: "claims"}
 
 // NewClaims is a function that returns a new instance of the claims
 func NewClaims(opts ...ClaimsOption) Claims {

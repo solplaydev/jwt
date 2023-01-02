@@ -17,6 +17,7 @@ var (
 	ErrUnexpectedSigningMethod = errors.New("unexpected_signing_method")
 	ErrFailedToSignToken       = errors.New("failed_to_sign_token")
 	ErrFailedToParseToken      = errors.New("failed_to_parse_token")
+	ErrInvalidClaims           = errors.New("invalid_claims")
 )
 
 // Error codes.
@@ -30,6 +31,7 @@ var ErrorHTTPCodes = map[error]int{
 	ErrUnexpectedSigningMethod: http.StatusBadRequest,
 	ErrFailedToSignToken:       http.StatusInternalServerError,
 	ErrFailedToParseToken:      http.StatusBadRequest,
+	ErrInvalidClaims:           http.StatusBadRequest,
 }
 
 // Error messages.
@@ -43,6 +45,7 @@ var ErrorMessages = map[error]string{
 	ErrUnexpectedSigningMethod: "Unexpected signing method",
 	ErrFailedToSignToken:       "Failed to sign token",
 	ErrFailedToParseToken:      "Failed to parse token",
+	ErrInvalidClaims:           "Invalid claims",
 }
 
 // Error is a custom error type.

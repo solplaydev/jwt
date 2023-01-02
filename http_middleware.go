@@ -21,6 +21,11 @@ func HttpMiddleware(jwtInteractor *Interactor, isRequired bool) func(http.Handle
 				return
 			}
 
+			// Remove the "Bearer " prefix
+			if len(tokenStr) > 7 && tokenStr[:7] == "Bearer " {
+				tokenStr = tokenStr[7:]
+			}
+
 			// Parse the token
 			claims, err := jwtInteractor.ParseWithClaims(tokenStr)
 			if err != nil {
@@ -28,8 +33,11 @@ func HttpMiddleware(jwtInteractor *Interactor, isRequired bool) func(http.Handle
 				return
 			}
 
+			// Set the token in the context
+			ctx := context.WithValue(r.Context(), TokenKey, tokenStr)
 			// Set the claims in the context
-			ctx := context.WithValue(r.Context(), ClaimsKey, claims)
+			ctx = context.WithValue(ctx, ClaimsKey, claims)
+
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
