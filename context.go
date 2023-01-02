@@ -3,6 +3,8 @@ package jwt
 import (
 	"context"
 	"fmt"
+
+	"github.com/google/uuid"
 )
 
 type (
@@ -21,8 +23,9 @@ func (c ContextKey) String() string {
 
 // Predefined context keys
 var (
-	ClaimsKey = ContextKey{Key: "claims"}
-	TokenKey  = ContextKey{Key: "token"}
+	ClaimsKey    = ContextKey{Key: "claims"}
+	TokenKey     = ContextKey{Key: "token"}
+	ProjectIDKey = ContextKey{Key: "project_id"}
 )
 
 // GetClaimsFromContext is a function that returns the claims from the context
@@ -84,4 +87,26 @@ func GetScopeFromContext(ctx context.Context) (string, error) {
 	}
 
 	return claims.Scope, nil
+}
+
+// GetProjectIDFromContext is a function that returns the project ID from the context
+func GetProjectIDFromContext(ctx context.Context) (string, error) {
+	projectID := ctx.Value(ProjectIDKey)
+	if projectID == nil {
+		return "", ErrInvalidProjectID
+	}
+
+	if result, ok := projectID.(string); ok {
+		return result, nil
+	}
+
+	if result, ok := projectID.(int); ok {
+		return fmt.Sprintf("%d", result), nil
+	}
+
+	if result, ok := projectID.(uuid.UUID); ok {
+		return result.String(), nil
+	}
+
+	return "", ErrInvalidProjectID
 }

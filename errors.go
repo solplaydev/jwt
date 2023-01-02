@@ -18,6 +18,7 @@ var (
 	ErrFailedToSignToken       = errors.New("failed_to_sign_token")
 	ErrFailedToParseToken      = errors.New("failed_to_parse_token")
 	ErrInvalidClaims           = errors.New("invalid_claims")
+	ErrInvalidProjectID        = errors.New("invalid_project_id")
 )
 
 // Error codes.
@@ -32,6 +33,7 @@ var ErrorHTTPCodes = map[error]int{
 	ErrFailedToSignToken:       http.StatusInternalServerError,
 	ErrFailedToParseToken:      http.StatusBadRequest,
 	ErrInvalidClaims:           http.StatusBadRequest,
+	ErrInvalidProjectID:        http.StatusBadRequest,
 }
 
 // Error messages.
@@ -46,6 +48,7 @@ var ErrorMessages = map[error]string{
 	ErrFailedToSignToken:       "Failed to sign token",
 	ErrFailedToParseToken:      "Failed to parse token",
 	ErrInvalidClaims:           "Invalid claims",
+	ErrInvalidProjectID:        "Invalid project ID",
 }
 
 // Error is a custom error type.
