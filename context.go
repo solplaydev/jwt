@@ -26,6 +26,7 @@ var (
 	ClaimsKey    = ContextKey{Key: "claims"}
 	TokenKey     = ContextKey{Key: "token"}
 	ProjectIDKey = ContextKey{Key: "project_id"}
+	AuthTypeKey  = ContextKey{Key: "auth_type"}
 )
 
 // GetClaimsFromContext is a function that returns the claims from the context
@@ -67,7 +68,11 @@ func GetSessionIDFromContext(ctx context.Context) (string, error) {
 func GetTokenFromContext(ctx context.Context) (string, error) {
 	token, ok := ctx.Value(TokenKey).(string)
 	if !ok {
-		return "", ErrInvalidToken
+		// Try to get claims by string context key
+		token, ok = ctx.Value(TokenKey.String()).(string)
+		if !ok {
+			return "", ErrInvalidToken
+		}
 	}
 
 	return token, nil
@@ -97,7 +102,11 @@ func GetScopeFromContext(ctx context.Context) (string, error) {
 func GetProjectIDFromContext(ctx context.Context, pidCtxKey ContextKey) (string, error) {
 	projectID := ctx.Value(pidCtxKey)
 	if projectID == nil {
-		return "", ErrInvalidProjectID
+		// Try to get claims by string context key
+		projectID = ctx.Value(pidCtxKey.String())
+		if projectID == nil {
+			return "", ErrInvalidProjectID
+		}
 	}
 
 	if result, ok := projectID.(string); ok {
@@ -113,4 +122,28 @@ func GetProjectIDFromContext(ctx context.Context, pidCtxKey ContextKey) (string,
 	}
 
 	return "", ErrInvalidProjectID
+}
+
+// GetAuthTypeFromContext is a function that returns the auth type from the context
+func GetAuthTypeFromContext(ctx context.Context, authTypeCtxKey ContextKey) (string, error) {
+	authType := ctx.Value(authTypeCtxKey)
+	if authType == nil {
+		// Try to get claims by string context key
+		authType = ctx.Value(authTypeCtxKey.String())
+		if authType == nil {
+			return "", ErrInvalidAuthType
+		}
+	}
+
+	result, ok := authType.(string)
+	if !ok {
+		return "", ErrInvalidAuthType
+	}
+
+	switch result {
+	case AuthTypeUser, AuthTypeApp, AuthTypeInternal:
+		return result, nil
+	}
+
+	return "", ErrInvalidAuthType
 }

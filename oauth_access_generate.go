@@ -13,8 +13,9 @@ type (
 	// JWTAccessGenerate is a struct that contains the methods that are used to generate a JWT token
 	// for the access token
 	JWTAccessGenerate struct {
-		jwt       jwtInteractor
-		pidCtxKey ContextKey
+		jwt            jwtInteractor
+		pidCtxKey      ContextKey
+		authTypeCtxKey ContextKey
 	}
 
 	// jwtInteractor is an interface that contains the methods that are used to interact with the JWT
@@ -24,10 +25,11 @@ type (
 )
 
 // NewJWTAccessGenerate is a function that returns a new instance of the JWT access token generator
-func NewJWTAccessGenerate(jwtInteractor jwtInteractor, pidCtxKey ContextKey) *JWTAccessGenerate {
+func NewJWTAccessGenerate(jwtInteractor jwtInteractor, pidCtxKey, authTypeCtxKey ContextKey) *JWTAccessGenerate {
 	return &JWTAccessGenerate{
-		jwt:       jwtInteractor,
-		pidCtxKey: pidCtxKey,
+		jwt:            jwtInteractor,
+		pidCtxKey:      pidCtxKey,
+		authTypeCtxKey: authTypeCtxKey,
 	}
 }
 
@@ -35,12 +37,14 @@ func NewJWTAccessGenerate(jwtInteractor jwtInteractor, pidCtxKey ContextKey) *JW
 // Implements the oauth2.AccessGenerate interface from the go-oauth2/oauth2 package
 func (a *JWTAccessGenerate) Token(ctx context.Context, data *oauth2.GenerateBasic, isGenRefresh bool) (string, string, error) {
 	pid, _ := GetProjectIDFromContext(ctx, a.pidCtxKey)
+	authType, _ := GetAuthTypeFromContext(ctx, a.authTypeCtxKey)
 
 	claims := NewClaims(
 		WithClientID(data.Client.GetID()),
 		WithUserID(data.UserID),
 		WithScope(data.TokenInfo.GetScope()),
 		WithProjectID(pid),
+		WithAuthType(authType),
 		WithExpiresAt(data.TokenInfo.GetAccessCreateAt().Add(data.TokenInfo.GetAccessExpiresIn()).Unix()),
 	)
 
