@@ -12,14 +12,11 @@ var (
 	ErrTokenMalformed          = errors.New("token_malformed")
 	ErrTokenExpired            = errors.New("token_expired")
 	ErrTokenNotActive          = errors.New("token_inactive")
-	ErrInvalidSession          = errors.New("invalid_session")
 	ErrFailedToParseClaims     = errors.New("failed_parse_claims")
 	ErrUnexpectedSigningMethod = errors.New("unexpected_signing_method")
 	ErrFailedToSignToken       = errors.New("failed_to_sign_token")
 	ErrFailedToParseToken      = errors.New("failed_to_parse_token")
 	ErrInvalidClaims           = errors.New("invalid_claims")
-	ErrInvalidProjectID        = errors.New("invalid_project_id")
-	ErrInvalidAuthType         = errors.New("invalid_auth_type")
 )
 
 // Error codes.
@@ -28,14 +25,11 @@ var ErrorHTTPCodes = map[error]int{
 	ErrTokenMalformed:          http.StatusBadRequest,
 	ErrTokenExpired:            http.StatusUnauthorized,
 	ErrTokenNotActive:          http.StatusUnauthorized,
-	ErrInvalidSession:          http.StatusUnauthorized,
 	ErrFailedToParseClaims:     http.StatusBadRequest,
 	ErrUnexpectedSigningMethod: http.StatusBadRequest,
 	ErrFailedToSignToken:       http.StatusInternalServerError,
 	ErrFailedToParseToken:      http.StatusBadRequest,
 	ErrInvalidClaims:           http.StatusBadRequest,
-	ErrInvalidProjectID:        http.StatusBadRequest,
-	ErrInvalidAuthType:         http.StatusBadRequest,
 }
 
 // Error messages.
@@ -44,14 +38,11 @@ var ErrorMessages = map[error]string{
 	ErrTokenMalformed:          "Malformed token",
 	ErrTokenExpired:            "Token expired",
 	ErrTokenNotActive:          "Token not active yet",
-	ErrInvalidSession:          "Invalid session",
 	ErrFailedToParseClaims:     "Failed to parse claims",
 	ErrUnexpectedSigningMethod: "Unexpected signing method",
 	ErrFailedToSignToken:       "Failed to sign token",
 	ErrFailedToParseToken:      "Failed to parse token",
 	ErrInvalidClaims:           "Invalid claims type or missing required claims",
-	ErrInvalidProjectID:        "Invalid project ID",
-	ErrInvalidAuthType:         "Invalid authorization type. Must be one of: 'user', 'app', 'internal'",
 }
 
 // Error is a custom error type.

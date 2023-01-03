@@ -3,8 +3,6 @@ package jwt
 import (
 	"context"
 	"fmt"
-
-	"github.com/google/uuid"
 )
 
 type (
@@ -23,10 +21,8 @@ func (c ContextKey) String() string {
 
 // Predefined context keys
 var (
-	ClaimsKey    = ContextKey{Key: "claims"}
-	TokenKey     = ContextKey{Key: "token"}
-	ProjectIDKey = ContextKey{Key: "project_id"}
-	AuthTypeKey  = ContextKey{Key: "auth_type"}
+	ClaimsKey = ContextKey{Key: "claims"}
+	TokenKey  = ContextKey{Key: "token"}
 )
 
 // GetClaimsFromContext is a function that returns the claims from the context
@@ -96,54 +92,4 @@ func GetScopeFromContext(ctx context.Context) (string, error) {
 	}
 
 	return claims.Scope, nil
-}
-
-// GetProjectIDFromContext is a function that returns the project ID from the context
-func GetProjectIDFromContext(ctx context.Context, pidCtxKey ContextKey) (string, error) {
-	projectID := ctx.Value(pidCtxKey)
-	if projectID == nil {
-		// Try to get claims by string context key
-		projectID = ctx.Value(pidCtxKey.String())
-		if projectID == nil {
-			return "", ErrInvalidProjectID
-		}
-	}
-
-	if result, ok := projectID.(string); ok {
-		return result, nil
-	}
-
-	if result, ok := projectID.(int); ok {
-		return fmt.Sprintf("%d", result), nil
-	}
-
-	if result, ok := projectID.(uuid.UUID); ok {
-		return result.String(), nil
-	}
-
-	return "", ErrInvalidProjectID
-}
-
-// GetAuthTypeFromContext is a function that returns the auth type from the context
-func GetAuthTypeFromContext(ctx context.Context, authTypeCtxKey ContextKey) (string, error) {
-	authType := ctx.Value(authTypeCtxKey)
-	if authType == nil {
-		// Try to get claims by string context key
-		authType = ctx.Value(authTypeCtxKey.String())
-		if authType == nil {
-			return "", ErrInvalidAuthType
-		}
-	}
-
-	result, ok := authType.(string)
-	if !ok {
-		return "", ErrInvalidAuthType
-	}
-
-	switch result {
-	case AuthTypeUser, AuthTypeApp, AuthTypeInternal:
-		return result, nil
-	}
-
-	return "", ErrInvalidAuthType
 }
