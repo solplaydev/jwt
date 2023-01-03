@@ -6,7 +6,7 @@ import (
 )
 
 // HttpMiddleware is a function that returns a new instance of the JWT middleware
-func HttpMiddleware(jwtInteractor *Interactor, isRequired bool) func(http.Handler) http.Handler {
+func HttpMiddleware(jwtInteractor *Interactor, isRequired bool, scopes ...string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Get the token from the request
@@ -26,11 +26,22 @@ func HttpMiddleware(jwtInteractor *Interactor, isRequired bool) func(http.Handle
 				return
 			}
 
+			// Check if the token has the required scopes
+			if len(scopes) > 0 {
+				for _, scope := range scopes {
+					if !claims.CheckScopeInAllowed(scope) {
+						http.Error(w, "Forbidden", http.StatusForbidden)
+						return
+					}
+				}
+			}
+
 			// Set the token in the context
 			ctx := context.WithValue(r.Context(), TokenKey, tokenStr)
 			// Set the claims in the context
 			ctx = context.WithValue(ctx, ClaimsKey, claims)
 
+			// Call the next handler
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}

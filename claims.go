@@ -1,8 +1,10 @@
 package jwt
 
 import (
+	"strings"
 	"time"
 
+	scopes "github.com/SonicRoshan/scope"
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 )
@@ -60,6 +62,21 @@ func (c Claims) IsUserAuth() bool {
 // IsInternalAuth is a method that returns true if the auth type is internal
 func (c Claims) IsInternalAuth() bool {
 	return c.AuthType == AuthTypeInternal
+}
+
+// GetScopes is a method that returns the scopes as a slice
+func (c Claims) GetScopes() []string {
+	return strings.Split(c.Scope, " ")
+}
+
+// CheckScopeInAllowed is a method that checks if the scope is in the allowed scopes
+func (c Claims) CheckScopeInAllowed(scope string) bool {
+	allowedScopes := c.GetScopes()
+	if len(allowedScopes) == 0 || scope == "" {
+		return false
+	}
+
+	return scopes.ScopeInAllowed(scope, allowedScopes)
 }
 
 // WithUserID is a function that sets the user id in the claims

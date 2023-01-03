@@ -3,6 +3,7 @@ module github.com/solplaydev/jwt
 go 1.19
 
 require (
+	github.com/SonicRoshan/scope v0.0.0-20210525134824-9bbd38664a7f
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/labstack/echo/v4 v4.10.0
