@@ -34,12 +34,7 @@ func NewJWTAccessGenerate(jwtInteractor jwtInteractor, pidCtxKey ContextKey) *JW
 // Token is a method that generates a new JWT token
 // Implements the oauth2.AccessGenerate interface from the go-oauth2/oauth2 package
 func (a *JWTAccessGenerate) Token(ctx context.Context, data *oauth2.GenerateBasic, isGenRefresh bool) (string, string, error) {
-	var pid string
-	if pidVal := ctx.Value(a.pidCtxKey); pidVal != nil {
-		if pidStr, ok := pidVal.(string); ok {
-			pid = pidStr
-		}
-	}
+	pid, _ := GetProjectIDFromContext(ctx, a.pidCtxKey)
 
 	claims := NewClaims(
 		WithClientID(data.Client.GetID()),

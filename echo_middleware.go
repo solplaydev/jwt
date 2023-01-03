@@ -7,18 +7,11 @@ func EchoMiddleware(jwtInteractor *Interactor, isRequired bool) echo.MiddlewareF
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			// Get the token from the request
-			tokenStr := c.Request().Header.Get("Authorization")
-			if tokenStr == "" {
-				if isRequired {
-					return echo.ErrUnauthorized.SetInternal(ErrInvalidToken)
-				}
-
+			tokenStr, err := GetTokenFromRequest(c.Request())
+			if err != nil && isRequired {
+				return echo.ErrUnauthorized.SetInternal(err)
+			} else if err != nil && !isRequired {
 				return next(c)
-			}
-
-			// Remove the "Bearer " prefix
-			if len(tokenStr) > 7 && tokenStr[:7] == "Bearer " {
-				tokenStr = tokenStr[7:]
 			}
 
 			// Parse the token

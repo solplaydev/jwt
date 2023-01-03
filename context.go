@@ -90,8 +90,8 @@ func GetScopeFromContext(ctx context.Context) (string, error) {
 }
 
 // GetProjectIDFromContext is a function that returns the project ID from the context
-func GetProjectIDFromContext(ctx context.Context) (string, error) {
-	projectID := ctx.Value(ProjectIDKey)
+func GetProjectIDFromContext(ctx context.Context, pidCtxKey ContextKey) (string, error) {
+	projectID := ctx.Value(pidCtxKey)
 	if projectID == nil {
 		return "", ErrInvalidProjectID
 	}

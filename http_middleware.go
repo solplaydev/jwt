@@ -10,20 +10,13 @@ func HttpMiddleware(jwtInteractor *Interactor, isRequired bool) func(http.Handle
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Get the token from the request
-			tokenStr := r.Header.Get("Authorization")
-			if tokenStr == "" {
-				if isRequired {
-					http.Error(w, "Unauthorized", http.StatusUnauthorized)
-					return
-				}
-
+			tokenStr, err := GetTokenFromRequest(r)
+			if err != nil && isRequired {
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+				return
+			} else if err != nil && !isRequired {
 				next.ServeHTTP(w, r)
 				return
-			}
-
-			// Remove the "Bearer " prefix
-			if len(tokenStr) > 7 && tokenStr[:7] == "Bearer " {
-				tokenStr = tokenStr[7:]
 			}
 
 			// Parse the token
