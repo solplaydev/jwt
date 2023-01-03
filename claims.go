@@ -93,7 +93,7 @@ func WithScope(scope string) ClaimsOption {
 // WithAuthType is a function that sets the auth type in the claims
 func WithAuthType(authType string) ClaimsOption {
 	return func(c *Claims) {
-		if authType == AuthTypeUser || authType == AuthTypeApp {
+		if authType == AuthTypeUser || authType == AuthTypeApp || authType == AuthTypeInternal {
 			c.AuthType = authType
 		}
 	}
