@@ -24,7 +24,7 @@ type (
 
 	// jwtInteractor is an interface that wraps the ParseWithClaims method.
 	jwtInteractor interface {
-		ParseWithClaims(tokenStr string) (Claims, error)
+		ParseWithClaims(tokenStr string) (*Claims, error)
 	}
 )
 
