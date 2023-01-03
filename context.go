@@ -30,13 +30,13 @@ var (
 
 // GetClaimsFromContext is a function that returns the claims from the context
 // and casts them to the Claims type, if possible
-func GetClaimsFromContext(ctx context.Context) (Claims, error) {
-	claims, ok := ctx.Value(ClaimsKey).(Claims)
+func GetClaimsFromContext(ctx context.Context) (*Claims, error) {
+	claims, ok := ctx.Value(ClaimsKey).(*Claims)
 	if !ok {
 		// Try to get claims by string context key
-		claims, ok = ctx.Value(ClaimsKey.String()).(Claims)
+		claims, ok = ctx.Value(ClaimsKey.String()).(*Claims)
 		if !ok {
-			return Claims{}, ErrInvalidClaims
+			return nil, ErrInvalidClaims
 		}
 	}
 
