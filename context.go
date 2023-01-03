@@ -33,7 +33,11 @@ var (
 func GetClaimsFromContext(ctx context.Context) (Claims, error) {
 	claims, ok := ctx.Value(ClaimsKey).(Claims)
 	if !ok {
-		return Claims{}, ErrInvalidClaims
+		// Try to get claims by string context key
+		claims, ok = ctx.Value(ClaimsKey.String()).(Claims)
+		if !ok {
+			return Claims{}, ErrInvalidClaims
+		}
 	}
 
 	return claims, nil
